@@ -4,8 +4,8 @@
 //                    //
 ////////////////////////
 
-// Partner1: Anshul Garde, A16824160
-// Partner2: Aryaman Jadhav (Dholya), (Student ID here)
+// Partner1: Anshul Garde (Chakkya), A16824160
+// Partner2: Aryaman Jadhav (Dholya), A16846457
 
 ////////////////////////
 //                    //
@@ -90,7 +90,7 @@
     // You must loop through the binary_search_queries array and print 1 if the index is found else 0
     // Hint: use binary_search_query_length and binary_search_queries pointers to loop through the queries
     //       and preserve x0 and x1 values, ie. the starting and ending address which you need to pass
-    //       in every function call)
+    //       in every function call
 
     // [BONUS QUESTION] INSERT YOUR CODE HERE
 
@@ -107,7 +107,22 @@ Swap:
     //     x1: the address of the second value
 
     // INSERT YOUR CODE HERE
+    SUBI	SP, SP, #24 // Reserving 4 double words on stack
+	STUR	FP, [SP, #16] // Save parent's FP on SP+24
+	STUR	LR, [SP, #8] // Save return addres on SP+16
+	ADDI	FP, SP, #16  // move fp up to create stack frame
+
+    //SWAPPING
+    LDUR X9,[X0,#0]         
+    STUR X0,[X1,#0]
+    STUR X1,[X9,#0]
     
+    LDUR	FP, [SP, #16] // Restore parent's FP from SP+24
+ 	LDUR	LR, [SP, #8] // Restore return addres from SP+16
+	ADDI	SP, SP, #24 // Releasing 4 double words of my stack
+	BR	LR
+
+
 
     br lr
 
