@@ -107,9 +107,9 @@ Swap:
     //     x1: the address of the second value
 
     // INSERT YOUR CODE HERE
-    SUBI	SP, SP, #24 // Reserving 4 double words on stack
-	STUR	FP, [SP, #16] // Save parent's FP on SP+24
-	STUR	LR, [SP, #8] // Save return addres on SP+16
+    SUBI	SP, SP, #24 // Reserving 3 double words on stack
+	STUR	FP, [SP, #16] // Save parent's FP on SP+16
+	STUR	LR, [SP, #8] // Save return addres on SP+8
 	ADDI	FP, SP, #16  // move fp up to create stack frame
 
     //SWAPPING
@@ -139,7 +139,6 @@ GetNextGap:
     //     x0: the updated gap value
 
     // INSERT YOUR CODE HERE
-    //NEED TO BE TESTED
     /// responsibilities at the start
     SUBI    SP, SP, #32 // Reserving 4 double words on stack
     STUR    FP, [SP, #24] // Save parent's FP on SP+24
@@ -147,14 +146,17 @@ GetNextGap:
     ADDI    FP, SP, #24  // move fp up to create stack frame
     
     STUR X0, [SP, #8] // Save the value of gap (X0) in memory so X0 can be changed for return
+    ADD X16, XZR,X0 //MAKE COPY OF GAP X0
     ADD X0, XZR, XZR //setting return value (X0) to 0 (for return 0)
-    SUBIS XZR, X0, #1
+    SUBIS XZR, X16, #1
     B.LE returnx
+   
+   
 
     else:
     LDUR X0, [SP, #8] //Restore value of gap for Ceil operation
     ADDI X16, XZR, #1 //Temp reg x16 = 1 for the upcoming AND operation
-    AND X16, X0, X16 //AND gap with 1, if 1 then odd number, if 0 then even
+    AND X16, X0, X16 //AND gap with 1, if LSB 1 then odd number, if 0 then even
     
     CBZ X16 even_number
     odd_number: //If gap is an odd number
