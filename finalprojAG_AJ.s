@@ -187,10 +187,19 @@ inPlaceMerge:
     // input:
     //    x0: The address of the starting element of the first sub-array.
     //    x1: The address of the last element of the second sub-array.
-    //    x2: The gap used in comparisons for shell sorting
+    //    x2: The gap used in comparisons for shell sorting ***passed to gap***
+    // variable log:
+    //    X9: The interator for the for loop. In C code it is "left". ***passed to SWAP***
+    //    X10: The right variable that is left+gap. ***passed to SWAP***
+    //    X11:-
+    //    X12: stores the array index= right*8
+    //    X13: stores the array index= left*8
+    //    X14: stores the right*8th index value
+    //    X15: stores the left*8th index value 
+    //    X16: stores the condition for the loop (left+gap)
 
     // INSERT YOUR CODE HERE
-
+    
     /// responsibilities at the start *****need to fix********
     SUBI    SP, SP, #32 // Reserving 4 double words on stack
     STUR    FP, [SP, #24] // Save parent's FP on SP+24
@@ -203,13 +212,12 @@ inPlaceMerge:
 
     ADD X9, XZR, X0 //interating variable in the for loop (left)
     ADD X10, XZR, XZR //INITIALIZING RIGHT VARIABLE
-    ADDI X11,XZR, #8 //CONSTANT TO USE TO ITERATE THROUGH AN Array
 
     //FOR LOOP
     loop: 
     ADD X10, X9, X2 //RIGHT=LEFT+GAP
-    MUL X12, X10, X11 //RIGHT*8 th INDEX
-    MUL X13, X9, X11 //LEFT*8 th INDEX
+    LSL X12, X10, #3 //RIGHT*8 th INDEX
+    LSL X13, X9, #3 //LEFT*8 th INDEX
     LDUR X14, [X0, X12] //ARR[RIGHT]
     LDUR X15, [X0, X13] //ARR[LEFT]
     SUBS XZR, X14, X15 // IF ARR[LEFT]>ARR[RIGHT]
@@ -225,7 +233,7 @@ inPlaceMerge:
 
     //****** CALL GAP *********//gap=GetNextGap(gap);
 
-    //****** CALL inPlaceMerge *************//
+    //****** RECURSIVE CALL inPlaceMerge *************//
 
 
     // Responsibilities of a procedure at return time *****need to fix********
