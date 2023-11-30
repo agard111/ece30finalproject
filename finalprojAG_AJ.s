@@ -139,6 +139,7 @@ GetNextGap:
     //     x0: the updated gap value
 
     // INSERT YOUR CODE HERE
+    
     /// responsibilities at the start
     SUBI    SP, SP, #32 // Reserving 4 double words on stack
     STUR    FP, [SP, #24] // Save parent's FP on SP+24
@@ -190,8 +191,50 @@ inPlaceMerge:
 
     // INSERT YOUR CODE HERE
 
-    br lr
+    /// responsibilities at the start *****need to fix********
+    SUBI    SP, SP, #32 // Reserving 4 double words on stack
+    STUR    FP, [SP, #24] // Save parent's FP on SP+24
+    STUR    LR, [SP, #16] // Save return addres on SP+16
+    ADDI    FP, SP, #24  // move fp up to create stack frame
 
+    //main code
+    SUBIS XZR, X2, #1 //if gap<1 return
+    B.LT returnproc
+
+    ADD X9, XZR, X0 //interating variable in the for loop (left)
+    ADD X10, XZR, XZR //INITIALIZING RIGHT VARIABLE
+    ADDI X11,XZR, #8 //CONSTANT TO USE TO ITERATE THROUGH AN Array
+
+    //FOR LOOP
+    loop: 
+    ADD X10, X9, X2 //RIGHT=LEFT+GAP
+    MUL X12, X10, X11 //RIGHT*8 th INDEX
+    MUL X13, X9, X11 //LEFT*8 th INDEX
+    LDUR X14, [X0, X12] //ARR[RIGHT]
+    LDUR X15, [X0, X13] //ARR[LEFT]
+    SUBS XZR, X14, X15 // IF ARR[LEFT]>ARR[RIGHT]
+
+    B Swap  //*** BRANCH TO SWAP** IDK IF THIS IS THE RIGHT WAY TO BRANCH AND HOW TO PASS VALUES TO SWAP
+
+    ADD X16, X9, X2 //LEFT+GAP
+    SUBS XZR, X16, X1 //IF LEFT+GAP<END
+    B.LE loop 
+    ADDI X9,X9,#1 //INCREMENTING LEFT BY 1
+
+    //END OF FOR LOOP
+
+    //****** CALL GAP *********//gap=GetNextGap(gap);
+
+    //****** CALL inPlaceMerge *************//
+
+
+    // Responsibilities of a procedure at return time *****need to fix********
+    returnproc:
+    LDUR    FP, [SP, #24] // Restore parent's FP from SP+24
+    LDUR    LR, [SP, #16] // Restore return addres from SP+16
+    ADDI    SP, SP, #32 // Releasing 4 double words of my stack
+
+    BR LR
 
 ////////////////////////
 //                    //

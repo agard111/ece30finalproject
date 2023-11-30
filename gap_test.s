@@ -7,7 +7,7 @@
 //     GetNextGap     //
 //                    //
 ////////////////////////
-ADDI X0,XZR,#33
+ADDI X0,XZR,#1
 GetNextGap:
     // input:
     //     x0: The previous value for gap
