@@ -231,9 +231,14 @@ inPlaceMerge:
 
     //END OF FOR LOOP
 
+    //Freeing of registers can be done by storing their value in the stack. 
+    //Free X0 and X1 registers and store values that need to be sent to gap in them.
+    //After calling gap, reassign original vlaues to X0 and X1 and clear memory.
     //****** CALL GAP *********//gap=GetNextGap(gap);
 
-    //****** RECURSIVE CALL inPlaceMerge *************//
+    BL GetNextGap
+
+    BL inPlaceMerge
 
 
     // Responsibilities of a procedure at return time *****need to verify********
