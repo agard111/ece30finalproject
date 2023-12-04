@@ -191,9 +191,7 @@ inPlaceMerge:
     // variable log:
     //    X9: The interator for the for loop. In C code it is "left". ***passed to SWAP***
     //    X10: The right variable that is left+gap. ***passed to SWAP***
-    //    X11:-
-    //    X12: stores the array index= right*8
-    //    X13: stores the array index= left*8
+    //    X11:  STORE A COPY OF GAP*8 FOR ADDING TO ADDRESS
     //    X14: stores the right*8th index value
     //    X15: stores the left*8th index value 
     //    X16: stores the condition for the loop (left+gap)
