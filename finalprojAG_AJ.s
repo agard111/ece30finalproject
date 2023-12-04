@@ -206,6 +206,7 @@ inPlaceMerge:
     STUR    LR, [SP, #56] // Save return addres on SP+56
     ADDI    FP, SP, #64  // move fp up to create stack frame
 
+    LSL X11,X2,#3 //STORE A COPY OF GAP*8 FOR ADDING TO ADDRESS
     //main code
     SUBIS XZR, X2, #1 //if gap<1 return
     B.LT returnproc
@@ -215,12 +216,12 @@ inPlaceMerge:
 
     //FOR LOOP
     loop: 
-    ADD X10, X9, X2 //RIGHT=LEFT+GAP
-    LSL X12, X10, #3 //RIGHT*8 th INDEX
-    LSL X13, X9, #3 //LEFT*8 th INDEX
-    LDUR X14, [X0, X12] //ARR[RIGHT]
-    LDUR X15, [X0, X13] //ARR[LEFT]
+    ADD X10, X9, X11 //RIGHT=LEFT+GAP*8
+    LDUR X14, [X0, X10] //ARR[RIGHT]
+    LDUR X15, [X0, X9] //ARR[LEFT]
     
+    //***** CALLING SWAP **********//
+
     STUR X0, [SP, #8] //CONFIRM LOCATION IN STACK
     STUR X1, [SP, #16] //CONFIRM LOCATION IN STACK
     ADD X0,XZR,X9 //LEFT PASSED TO SWAP
@@ -229,26 +230,31 @@ inPlaceMerge:
     SUBS XZR, X14, X15 // IF ARR[LEFT]>ARR[RIGHT]
     BL Swap  
 
+    //UPDATE X9 AND X10 AFTER SWAP
+    ADD X9,XZR,X0
+    ADD X10,XZR,X1
+
     //REASSIGN X0 AND X1
     LDUR X0,[SP,#8]
     LDUR X1,[SP,#16]
 
-    ADD X16, X9, X2 //LEFT+GAP
-    SUBS XZR, X16, X1 //IF LEFT+GAP<END
+    //***** BACK FROM SWAP **********//
+    ADDI X9,X9,#8 //INCREMENTING LEFT ADDRESS BY 1 INDEX
+    SUBS XZR, X10, X1 //IF LEFT+GAP<END
     B.LE loop 
-    ADDI X9,X9,#1 //INCREMENTING LEFT BY 1
+    
 
     //END OF FOR LOOP
 
-    //Freeing of registers can be done by storing their value in the stack. 
-    //Free X0 and X1 registers and store values that need to be sent to gap in them.
-    //After calling gap, reassign original vlaues to X0 and X1 and clear memory.
-    //****** CALL GAP *********//gap=GetNextGap(gap);
+    //***** CALLING GAP **********//
 
     STUR X0, [SP, #8] //CONFIRM LOCATION IN STACK
     ADD X0,XZR,X2
     BL GetNextGap
+    ADD X2,XZR,X0 //UPDATING GAP
     LDUR X0,[SP, #8]
+
+    //***** BACK FROM GAP *******//
 
     BL inPlaceMerge
 
