@@ -220,9 +220,18 @@ inPlaceMerge:
     LSL X13, X9, #3 //LEFT*8 th INDEX
     LDUR X14, [X0, X12] //ARR[RIGHT]
     LDUR X15, [X0, X13] //ARR[LEFT]
-    SUBS XZR, X14, X15 // IF ARR[LEFT]>ARR[RIGHT]
+    
+    STUR X0, [SP, #8] //CONFIRM LOCATION IN STACK
+    STUR X1, [SP, #16] //CONFIRM LOCATION IN STACK
+    ADD X0,XZR,X9 //LEFT PASSED TO SWAP
+    ADD X1,XZR,X10 //RIGHT PASSED TO SWAP
 
-    B Swap  //*** BRANCH TO SWAP** IDK IF THIS IS THE RIGHT WAY TO BRANCH AND HOW TO PASS VALUES TO SWAP
+    SUBS XZR, X14, X15 // IF ARR[LEFT]>ARR[RIGHT]
+    BL Swap  
+
+    //REASSIGN X0 AND X1
+    LDUR X0,[SP,#8]
+    LDUR X1,[SP,#16]
 
     ADD X16, X9, X2 //LEFT+GAP
     SUBS XZR, X16, X1 //IF LEFT+GAP<END
@@ -236,7 +245,10 @@ inPlaceMerge:
     //After calling gap, reassign original vlaues to X0 and X1 and clear memory.
     //****** CALL GAP *********//gap=GetNextGap(gap);
 
+    STUR X0, [SP, #8] //CONFIRM LOCATION IN STACK
+    ADD X0,XZR,X2
     BL GetNextGap
+    LDUR X0,[SP, #8]
 
     BL inPlaceMerge
 
