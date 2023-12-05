@@ -199,12 +199,16 @@ inPlaceMerge:
     // INSERT YOUR CODE HERE
     
     /// responsibilities at the start *****need to verify********
-    SUBI    SP, SP, #72 // Reserving 9 double words on stack
-    STUR    FP, [SP, #64] // Save parent's FP on SP+64
-    STUR    LR, [SP, #56] // Save return addres on SP+56
-    ADDI    FP, SP, #64  // move fp up to create stack frame
+    SUBI    SP, SP, #40 // Reserving 5 double words on stack
+    STUR    FP, [SP, #32] // Save parent's FP 
+    STUR    LR, [SP, #24] // Save return addres on SP
+    STUR    X0, [SP,#16] //COPY OF x0
+    STUR    X1, [SP, #8] //COPY OF X1
+    STUR    X2, [SP,#0] //COPY OF X2
+    ADDI    FP, SP, #32  // move fp up to create stack frame
 
     LSL X11,X2,#3 //STORE A COPY OF GAP*8 FOR ADDING TO ADDRESS
+    
     //main code
     SUBIS XZR, X2, #1 //if gap<1 return
     B.LT returnproc
@@ -259,9 +263,12 @@ inPlaceMerge:
 
     // Responsibilities of a procedure at return time *****need to verify********
     returnproc:
-    LDUR    FP, [SP, #64] // Restore parent's FP from SP+64
-    LDUR    LR, [SP, #56] // Restore return addres from SP+56
-    ADDI    SP, SP, #72 // Releasing 9 double words of my stack
+    LDUR    FP, [SP, #32] // Restore parent's FP from SP+32
+    LDUR    LR, [SP, #24] // Restore return addres from SP+24
+    LDUR    X0, [SP, #16] //RESTORE original VALUE OF X0
+    LDUR    X1, [SP, #8] //RESTORE original VALUE OF X1
+    LDUR    X2, [SP, #0] //RESTORE original VALUE OF X2
+    ADDI    SP, SP, #40 // Releasing  double words of my stack
 
     BR LR
 
