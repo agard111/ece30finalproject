@@ -277,7 +277,6 @@ inPlaceMerge:
 //      MergeSort     //
 //                    //
 ////////////////////////
-MergeSort:
     // input:
     //     x0: The starting address of the array.
     //     x1: The ending address of the array
@@ -292,39 +291,39 @@ MergeSort:
         STUR    X1, [SP, #8]       // Save initial X1 on SP+8
         ADDI    FP, SP, #32        // Move frame pointer up to create new stack frame
 
-        SUBS    XZR, X0, X1
-        B.GE    MergeSort_ret
+        SUBS    XZR, X0, X1        //If starting and ending address is the same, we are done
+        B.GE    MS_return          //End merge sort
 
-        ADD     X9, X0, X1
-        LSR     X9, X9, #1          // mid = (start+end)/2
-        STUR    X9, [SP, #0]       // store mid
+        ADD     X19, X0, X1         //Add start and end for to calculate midpoint
+        LSR     X19, X19, #1        // (start+end)/2
+        STUR    X19, [SP, #0]       // store midpoint in X19
 
-        ADDI    X1, X9, #0
+        ADDI    X1, X19, #0         //Midpoint is the new ending point
 
-        BL      MergeSort
+        BL      MergeSort          //MergeSort(start, mid)
 
-        LDUR    X1, [SP, #8]
-        LDUR    X9, [SP, #0]
+        LDUR    X1, [SP, #8]        //Restore endpoint
+        LDUR    X19, [SP, #0]       //Restore midpoint
 
-        ADDI    X0, X9, #8
+        ADDI    X0, X19, #8         //Midpoint is the new starting point
 
-        BL      MergeSort
+        BL      MergeSort          //MergeSort(mid+1, end)
 
-        LDUR    X0, [SP, #16]
-        LDUR    X1, [SP, #8]
+        LDUR    X0, [SP, #16]      //Restore startpoint
+        LDUR    X1, [SP, #8]       //Restore endpoint
 
-        SUBS    X0, X1, X0
-        LSR     X0, X0, #3      // convert to index
-        ADDI    X0, X0, #1
+        SUBS    X0, X1, X0         // startpoint = startpoint + endpoint
+        LSR     X0, X0, #3         // convert to index
+        ADDI    X0, X0, #1         //startpoint = startpoint + 1
 
-        BL      GetNextGap
+        BL      GetNextGap         //gap <-- GetNextGap(end − start + 1)
 
         ADDI    X2, X0, #0         // gap
-        LDUR    X0, [SP, #16]
+        LDUR    X0, [SP, #16]      //Restore startpoint
 
-        BL      inPlaceMerge
+        BL      inPlaceMerge       //inPlaceMerge(p, q, gap)
 
-MergeSort_ret:
+        MS_return:
         LDUR    X1, [SP, #8]    //Restore value of initial X1
         LDUR    X0, [SP, #16]   //Restore value of initial X0
         LDUR    LR, [SP, #24]   //Restore Link Register
@@ -332,8 +331,6 @@ MergeSort_ret:
         ADDI    SP, SP, #40     //Deallocate 5 double words
 
         BR LR
-
-    BR LR
 
 ////////////////////////
 //                    //
