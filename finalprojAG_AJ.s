@@ -276,8 +276,57 @@ MergeSort:
     //     x1: The ending address of the array
 
     // INSERT YOUR CODE HERE
+    
+MergeSort:
+        SUBI    SP, SP, #40        // Reserve 5 double words on stack
+        STUR    FP, [SP, #32]      // Save parent's frame pointer at SP+32
+        STUR    LR, [SP, #24]      // Save link register on SP+24
+        STUR    X0, [SP, #16]      // Save initial X0 on SP+16 so we can use it freely
+        STUR    X1, [SP, #8]       // Save initial X1 on SP+8
+        ADDI    FP, SP, #32        // Move frame pointer up to create new stack frame
 
-    br lr
+        SUBS    XZR, X0, X1
+        B.GE    MergeSort_ret
+
+        ADD     X9, X0, X1
+        LSR     X9, X9, #1          // mid = (start+end)/2
+        STUR    X9, [SP, #0]       // store mid
+
+        ADDI    X1, X9, #0
+
+        BL      MergeSort
+
+        LDUR    X1, [SP, #8]
+        LDUR    X9, [SP, #0]
+
+        ADDI    X0, X9, #8
+
+        BL      MergeSort
+
+        LDUR    X0, [SP, #16]
+        LDUR    X1, [SP, #8]
+
+        SUBS    X0, X1, X0
+        LSR     X0, X0, #3      // convert to index
+        ADDI    X0, X0, #1
+
+        BL      GetNextGap
+
+        ADDI    X2, X0, #0         // gap
+        LDUR    X0, [SP, #16]
+
+        BL      inPlaceMerge
+
+MergeSort_ret:
+        LDUR    X1, [SP, #8]    //Restore value of initial X1
+        LDUR    X0, [SP, #16]   //Restore value of initial X0
+        LDUR    LR, [SP, #24]   //Restore Link Register
+        LDUR    FP, [SP, #32]   //Restore parent's link register
+        ADDI    SP, SP, #40     //Deallocate 5 double words
+
+        BR LR
+
+    BR LR
 
 ////////////////////////
 //                    //
