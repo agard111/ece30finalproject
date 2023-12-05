@@ -114,9 +114,10 @@
         ADDI	FP, SP, #16  // move fp up to create stack frame
 
         //SWAPPING
-        LDUR X9,[X0,#0]         
-        STUR X0,[X1,#0]
-        STUR X1,[X9,#0]
+        LDUR    X9,[X0,#0] 
+        LDUR    X10,[X1,#0]        
+        STUR    X9,[X1,#0]
+        STUR    X10,[X0,#0]
         
         LDUR	FP, [SP, #16] // Restore parent's FP from SP+24
         LDUR	LR, [SP, #8] // Restore return addres from SP+16
