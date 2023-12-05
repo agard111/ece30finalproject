@@ -101,37 +101,34 @@
 //        Swap        //
 //                    //
 ////////////////////////
-Swap:
+
     // input:
     //     x0: the address of the first value
     //     x1: the address of the second value
 
     // INSERT YOUR CODE HERE
-    SUBI	SP, SP, #24 // Reserving 3 double words on stack
-	STUR	FP, [SP, #16] // Save parent's FP on SP+16
-	STUR	LR, [SP, #8] // Save return addres on SP+8
-	ADDI	FP, SP, #16  // move fp up to create stack frame
+    Swap:
+        SUBI	SP, SP, #24 // Reserving 3 double words on stack
+        STUR	FP, [SP, #16] // Save parent's FP on SP+16
+        STUR	LR, [SP, #8] // Save return addres on SP+8
+        ADDI	FP, SP, #16  // move fp up to create stack frame
 
-    //SWAPPING
-    LDUR X9,[X0,#0]         
-    STUR X0,[X1,#0]
-    STUR X1,[X9,#0]
-    
-    LDUR	FP, [SP, #16] // Restore parent's FP from SP+24
- 	LDUR	LR, [SP, #8] // Restore return addres from SP+16
-	ADDI	SP, SP, #24 // Releasing 4 double words of my stack
-	BR	LR
+        //SWAPPING
+        LDUR X9,[X0,#0]         
+        STUR X0,[X1,#0]
+        STUR X1,[X9,#0]
+        
+        LDUR	FP, [SP, #16] // Restore parent's FP from SP+24
+        LDUR	LR, [SP, #8] // Restore return addres from SP+16
+        ADDI	SP, SP, #24 // Releasing 4 double words of my stack
+    BR	LR
 
-
-
-    br lr
 
 ////////////////////////
 //                    //
 //     GetNextGap     //
 //                    //
 ////////////////////////
-GetNextGap:
     // input:
     //     x0: The previous value for gap
 
@@ -141,6 +138,7 @@ GetNextGap:
     // INSERT YOUR CODE HERE
     
     /// responsibilities at the start
+GetNextGap:
     SUBI    SP, SP, #32 // Reserving 4 double words on stack
     STUR    FP, [SP, #24] // Save parent's FP on SP+24
     STUR    LR, [SP, #16] // Save return addres on SP+16
@@ -183,7 +181,7 @@ GetNextGap:
 //    inPlaceMerge    //
 //                    //
 ////////////////////////
-inPlaceMerge:
+
     // input:
     //    x0: The address of the starting element of the first sub-array.
     //    x1: The address of the last element of the second sub-array.
@@ -199,6 +197,8 @@ inPlaceMerge:
     // INSERT YOUR CODE HERE
     
     /// responsibilities at the start *****need to verify********
+
+inPlaceMerge:
     SUBI    SP, SP, #40 // Reserving 5 double words on stack
     STUR    FP, [SP, #32] // Save parent's FP 
     STUR    LR, [SP, #24] // Save return addres on SP
@@ -219,8 +219,8 @@ inPlaceMerge:
     //FOR LOOP
     loop: 
     ADD X10, X9, X11 //RIGHT=LEFT+GAP*8
-    LDUR X14, [X0, X10] //ARR[RIGHT]
-    LDUR X15, [X0, X9] //ARR[LEFT]
+    LDUR X14, [X10, #0] //ARR[RIGHT]
+    LDUR X15, [X9, #0] //ARR[LEFT]
     
     //***** CALLING SWAP **********//
 
