@@ -330,23 +330,28 @@ MergeSort:
         STUR    X1, [SP, #16]       // Save initial X1 on SP+8
         STUR    X0, [SP, #8]      // Save initial X0 on SP+16 so we can use it freely
         ADDI    FP, SP, #40        // Move frame pointer up to create new stack frame
+
         SUBS    X0, X1, X0        //If starting and ending address is the same, we are done
         B.LE    MS_return          //End merge sort
+
         LDUR    X1, [SP, #16]       //Restore endpoint
         LDUR    X0, [SP, #8]      //Restore startpoint
         ADD     X19, X0, X1         //Add start and end for to calculate midpoint
         LSR     X19,X19,#3
         LSR     X20, X19, #1        // Divide by 2
         LSL     X20, X20, #3
+
         STUR    X20, [SP, #32]       // store midpoint in X20
         ADD     X1, X20, XZR      //Midpoint is the new ending point
         BL      MergeSort          //MergeSort(start, mid)
         LDUR    X1, [SP, #16]        //Restore endpoint
         LDUR    X20, [SP, #32]       //Restore midpoint
+
         ADDI    X0, X20, #8         //Midpoint is the new starting point
         BL      MergeSort          //MergeSort(mid+1, end)
         LDUR    X1, [SP, #16]       //Restore endpoint
         LDUR    X0, [SP, #8]      //Restore startpoint
+
         SUBS    X2, X1, X0         //Right - Left
         LSR     X2, X2, #3          //Convert to length
         ADDI    X2, X2, #1         //length + 1
@@ -354,7 +359,9 @@ MergeSort:
         BL      GetNextGap         //gap <-- GetNextGap(right − left + 1)
         SUBI    X2, X0, #0         //X2 Input for InPlaceMerge
         LDUR    X0, [SP, #8]      //Restore startpoint
+
         BL      inPlaceMerge       //inPlaceMerge(p, q, gap)
+        
         MS_return:
         LDUR    X0, [SP, #8]   //Restore value of initial X0
         LDUR    X1, [SP, #16]    //Restore value of initial X1
