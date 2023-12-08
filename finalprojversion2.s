@@ -4,8 +4,8 @@
 //                    //
 ////////////////////////
 
-// Partner1: Anshul Garde (Chakkya), A16824160
-// Partner2: Aryaman Jadhav (Dholya), A16846457
+// Partner1: Anshul Garde, A16824160
+// Partner2: Aryaman Jadhav, A16846457
 
 ////////////////////////
 //                    //
@@ -335,9 +335,11 @@ MergeSort:
         LDUR    X1, [SP, #16]       //Restore endpoint
         LDUR    X0, [SP, #8]      //Restore startpoint
         ADD     X19, X0, X1         //Add start and end for to calculate midpoint
+        LSR     X19,X19,#3
         LSR     X20, X19, #1        // Divide by 2
+        LSL     X20, X20, #3
         STUR    X20, [SP, #32]       // store midpoint in X20
-        ADDI    X1, X20, #0         //Midpoint is the new ending point
+        ADD     X1, X20, XZR      //Midpoint is the new ending point
         BL      MergeSort          //MergeSort(start, mid)
         LDUR    X1, [SP, #16]        //Restore endpoint
         LDUR    X20, [SP, #32]       //Restore midpoint
