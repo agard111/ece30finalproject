@@ -327,15 +327,15 @@ MergeSort:
         SUBI    SP, SP, #48        // Reserve 6 double words on stack
         STUR    FP, [SP, #40]      // Save parent's frame pointer at SP+32
         STUR    LR, [SP, #24]      // Save link register on SP+24
-        STUR    X1, [SP, #16]       // Save initial X1 on SP+8
-        STUR    X0, [SP, #8]      // Save initial X0 on SP+16 so we can use it freely
+        STUR    X0, [SP, #16]       // Save initial X1 on SP+8
+        STUR    X1, [SP, #8]      // Save initial X0 on SP+16 so we can use it freely
         ADDI    FP, SP, #40        // Move frame pointer up to create new stack frame
 
         SUBS    X0, X1, X0        //If starting and ending address is the same, we are done
         B.LE    MS_return          //End merge sort
 
-        LDUR    X1, [SP, #16]       //Restore endpoint
-        LDUR    X0, [SP, #8]      //Restore startpoint
+        LDUR    X0, [SP, #16]       //Restore endpoint
+        LDUR    X1, [SP, #8]      //Restore startpoint
         ADD     X19, X0, X1         //Add start and end for to calculate midpoint
         LSR     X19,X19,#3
         LSR     X20, X19, #1        // Divide by 2
@@ -344,13 +344,13 @@ MergeSort:
         STUR    X20, [SP, #32]       // store midpoint in X20
         ADD     X1, X20, XZR      //Midpoint is the new ending point
         BL      MergeSort          //MergeSort(start, mid)
-        LDUR    X1, [SP, #16]        //Restore endpoint
+        LDUR    X1, [SP, #8]        //Restore endpoint
         LDUR    X20, [SP, #32]       //Restore midpoint
 
         ADDI    X0, X20, #8         //Midpoint is the new starting point
         BL      MergeSort          //MergeSort(mid+1, end)
-        LDUR    X1, [SP, #16]       //Restore endpoint
-        LDUR    X0, [SP, #8]      //Restore startpoint
+        LDUR    X1, [SP, #8]       //Restore endpoint
+        LDUR    X0, [SP, #16]      //Restore startpoint
 
         SUBS    X2, X1, X0         //Right - Left
         LSR     X2, X2, #3          //Convert to length
@@ -358,13 +358,13 @@ MergeSort:
         ADDI    X0, X2, #0
         BL      GetNextGap         //gap <-- GetNextGap(right − left + 1)
         SUBI    X2, X0, #0         //X2 Input for InPlaceMerge
-        LDUR    X0, [SP, #8]      //Restore startpoint
+        LDUR    X0, [SP, #16]      //Restore startpoint
 
         BL      inPlaceMerge       //inPlaceMerge(p, q, gap)
         
         MS_return:
-        LDUR    X0, [SP, #8]   //Restore value of initial X0
-        LDUR    X1, [SP, #16]    //Restore value of initial X1
+        LDUR    X0, [SP, #16]   //Restore value of initial X0
+        LDUR    X1, [SP, #8]    //Restore value of initial X1
         LDUR    LR, [SP, #24]   //Restore Link Register
         LDUR    FP, [SP, #40]   //Restore parent's link register
         ADDI    SP, SP, #48     //Deallocate 5 double words
